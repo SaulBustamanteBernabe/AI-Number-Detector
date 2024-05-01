@@ -1,3 +1,4 @@
+# Bibliotecas utilizads
 import tkinter as tk
 import numpy as np
 import pickle
@@ -7,6 +8,7 @@ from classes.Network import Network
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
+        # Declaro todas las variables del programa
         self.net = None
         self.canvas_reduce = None
         self.btnPredict = None
@@ -21,6 +23,7 @@ class App(tk.Tk):
         self.window_width = None
         self.window_height = None
 
+        # Establece las propiedades de la aplicación
         self.title('AI Number Detector')
         self.set_window(550, 340)
         self.create_widgets()
@@ -28,6 +31,7 @@ class App(tk.Tk):
         self.setNetwork_AI()
 
     def create_widgets(self):
+        # Se establecen los elementos de la aplicación
         # Crear un lienzo
         self.width_canvas = 280
         self.height_canvas = 280
@@ -51,6 +55,7 @@ class App(tk.Tk):
         self.btnPredict.pack(side=tk.BOTTOM, pady=10, padx=10)
 
     def draw_square(self, event):
+        # Evento para dibujar en el canvas, ademas de la logica necesaria
         side = 16
         x1, y1 = int(event.x - side / 2), int(event.y - side / 2)
         x2, y2 = int(event.x + side / 2), int(event.y + side / 2)
@@ -60,22 +65,25 @@ class App(tk.Tk):
             for j in range(max(0, x1), min(self.width_canvas, x2)):
                 self.array_canvas[i][j] = 1
         # Actualizar el arreglo bidimensional escalado
-        r = self.canvas_reduce = 10
+        r = self.canvas_reduce
         for i, a in enumerate(self.array_canvas_escaled):
             for j, b in enumerate(a):
                 self.array_canvas_escaled[i][j] = np.mean(self.array_canvas[i*r:(i*r)+r, j*r:(j*r)+r])
 
     def predict(self):
+        # Comando del boton PREDICT, prepara la matriz para ser utilizada en la red neuronal y mostrada en la etiqueta
         array_num = np.reshape(self.array_canvas_escaled, (784, 1))
         res = self.net.feedforward(array_num)
         self.lblNumber["text"] = f"{np.argmax(res)}"
 
     def clear_canvas(self):
+        # Comando del boton CLEAR, limpia el cambas y reinicia los arreglos
         self.canvas.delete("all")
         self.lblNumber["text"] = " "
         self.setCanvas_logic()
 
     def setNetwork_AI(self):
+        # Se inicia el objeto de la red neuronal y se recuperan la matriz de los pesos y los bias
         self.net = Network([784, 30, 10])
 
         with open('data/weights.pkl', 'rb') as w:
@@ -84,11 +92,15 @@ class App(tk.Tk):
             self.net.biases = pickle.load(b)
 
     def setCanvas_logic(self):
+        # Se establcen los arreglos que serviran para la logica del canvas
+        # Un arreglo del mismo tamaño que el canvas
+        # Un factor de reducción y el arreglo reducido adaptadp para la red neuronal
         self.array_canvas = np.array([[0 for _ in range(self.width_canvas)] for _ in range(self.height_canvas)], dtype=np.float32)
         self.canvas_reduce = 10
         self.array_canvas_escaled = np.array([[0 for _ in range(self.width_canvas//self.canvas_reduce)] for _ in range(self.height_canvas//self.canvas_reduce)], dtype=np.float32)
 
     def set_window(self, width, height):
+        # Establece el tamaño de la venta, su ubicación centrada en la pantalla y no rescalable
         self.window_width = width
         self.window_height = height
 
