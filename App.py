@@ -51,7 +51,7 @@ class App(tk.Tk):
         self.btnPredict.pack(side=tk.BOTTOM, pady=10, padx=10)
 
     def draw_square(self, event):
-        side = 36
+        side = 16
         x1, y1 = int(event.x - side / 2), int(event.y - side / 2)
         x2, y2 = int(event.x + side / 2), int(event.y + side / 2)
         self.canvas.create_rectangle(x1, y1, x2, y2, fill="black")
@@ -78,9 +78,9 @@ class App(tk.Tk):
     def setNetwork_AI(self):
         self.net = Network([784, 30, 10])
 
-        with open('weights.pkl', 'rb') as w:
+        with open('data/weights.pkl', 'rb') as w:
             self.net.weights = pickle.load(w)
-        with open('biases.pkl', 'rb') as b:
+        with open('data/biases.pkl', 'rb') as b:
             self.net.biases = pickle.load(b)
 
     def setCanvas_logic(self):

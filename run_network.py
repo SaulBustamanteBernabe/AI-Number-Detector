@@ -9,7 +9,7 @@ from classes.Network import Network
 
 
 def load_data():
-    mnist = gzip.open('mnist.pkl.gz', 'rb')
+    mnist = gzip.open('data/mnist.pkl.gz', 'rb')
     training_data, classification_data, test_data = pickle.load(mnist, encoding='latin1')
     mnist.close()
 
@@ -50,19 +50,19 @@ if __name__ == "__main__":
     training_data, validation_data, test_data = wrap_data()
     net = Network([784, 30, 10])
 
-    if os.path.isfile("weights.pkl") and os.path.isfile("biases.pkl"):
-        with open('weights.pkl', 'rb') as w:
+    if os.path.isfile("data/weights.pkl") and os.path.isfile("data/biases.pkl"):
+        with open('data/weights.pkl', 'rb') as w:
             net.weights = pickle.load(w)
-        with open('biases.pkl', 'rb') as b:
+        with open('data/biases.pkl', 'rb') as b:
             net.biases = pickle.load(b)
     else:
         net.SGD(list(training_data), 30, 10, 3.0, test_data=list(test_data))
-        with open('weights.pkl', 'wb') as w:
+        with open('data/weights.pkl', 'wb') as w:
             pickle.dump(net.weights, w)
-        with open('biases.pkl', 'wb') as b:
+        with open('data/biases.pkl', 'wb') as b:
             pickle.dump(net.biases, b)
 
-    img_num = cv2.imread('Numero.png', cv2.IMREAD_GRAYSCALE)
+    img_num = cv2.imread('assets/Numero.png', cv2.IMREAD_GRAYSCALE)
     array_num = (np.reshape(cv2.bitwise_not(img_num), (784, 1))/255)
     res = net.feedforward(array_num)
     print(np.argmax(res))
